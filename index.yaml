@@ -13,4 +13,16 @@ entries:
     urls:
     - https://github.com/cbrendanprice/k8s-bastion/releases/download/k8s-dev-pod-0.3.0/k8s-dev-pod-0.3.0.tgz
     version: 0.3.0
-generated: "2025-01-10T20:36:49.147470337Z"
+  - apiVersion: v2
+    created: "2025-01-10T21:00:04.010766091Z"
+    description: A Helm chart for deploying a dev environment inside a K8S cluster
+      that is compatible with Visual Studio Code remote targets
+    digest: 148a5d21aa5912b4a186a07f470cc264961a416cb534246aa2a6ec49ea7369fb
+    maintainers:
+    - name: Bryopsida
+    name: k8s-dev-pod
+    type: application
+    urls:
+    - https://github.com/cbrendanprice/k8s-bastion/releases/download/k8s-dev-pod-0.3.0-1/k8s-dev-pod-0.3.0-1.tgz
+    version: 0.3.0-1
+generated: "2025-01-10T21:00:04.010794825Z"
