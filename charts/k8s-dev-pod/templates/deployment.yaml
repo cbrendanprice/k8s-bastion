@@ -63,6 +63,8 @@ spec:
               value: "{{ .Values.sdkManInstallEnabled }}"
             - name: OH_MY_ZSH_INSTALL_ENABLED
               value: "{{ .Values.ohMyZshInstallEnabled }}"
+            - name: USERNAME
+              value: {{ .Values.username | default "developer" | quote }}
             {{- if .Values.env }}
             {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
@@ -72,9 +74,11 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: true
           volumeMounts:
             - name: home
-              mountPath: /home/developer
+              mountPath: /home/{{ .Values.username }}
               readOnly: false
             - name: dropbear
               mountPath: /etc/dropbear

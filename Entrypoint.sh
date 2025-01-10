@@ -1,9 +1,13 @@
 #!/bin/bash
 
+USERNAME=${USERNAME:="developer"}
+
 # setup permissions
 sudo mkdir -p /etc/dropbear
 sudo chmod 700 /etc/dropbear
-sudo chown -R developer:developer /etc/dropbear
+# Allow dropbear to read /etc/shadow for password authentication without running dropbear as root
+sudo adduser "$USERNAME" shadow
+sudo chown -R "$USERNAME:$USERNAME" /etc/dropbear
 touch /etc/dropbear/authorized_keys
 chmod 600 /etc/dropbear/authorized_keys
 
@@ -12,7 +16,7 @@ if [ -e /authorized-keys ] ; then
   cat /authorized-keys > /etc/dropbear/authorized_keys
 fi
 
-sudo chown -R developer:developer /home/developer
+sudo chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
 
 # setup home directory links/permissions etc
 # this occurs on every container startup and is meant to be idempotent without overwriting existing files
@@ -38,13 +42,13 @@ fi
 
 passwordLoginEnabled=${PASSWORD_LOGIN_ENABLED:-"false"}
 if [[ $passwordLoginEnabled == "true" ]]; then
-  # Create a random password for developer and echo it to the console
+  # Create a random password for user and echo it to the console
   PASSWORD=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-  echo "developer:$PASSWORD"| sudo chpasswd
+  echo "$USERNAME:$PASSWORD"| sudo chpasswd
   echo "Your password is: $PASSWORD"
   exec dropbear -R -w -F -E -p 3022 -P /var/run/dropbear.pid
 else
   echo "Password login is disabled"
-  sudo passwd -d developer
+  sudo passwd -d "$USERNAME"
   exec dropbear -R -w -F -E -s -p 3022 -P /var/run/dropbear.pid
 fi
