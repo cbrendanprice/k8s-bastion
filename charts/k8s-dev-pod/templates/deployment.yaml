@@ -72,9 +72,11 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: true
           volumeMounts:
             - name: home
-              mountPath: /home/developer
+              mountPath: /home/{{ .Values.username }}
               readOnly: false
             - name: dropbear
               mountPath: /etc/dropbear
