@@ -26,3 +26,5 @@ nvmInstallEnabled: true
 nvmVersion: v0.39.7
 sdkManInstallEnabled: true
 ohMyZshInstallEnabled: true
+service:
+  enabled: true

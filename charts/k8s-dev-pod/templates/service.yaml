@@ -1,0 +1,41 @@
+{{- if .Values.service.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "k8s-dev-pod.fullname" . }}
+  labels:
+    {{- include "k8s-dev-pod.labels" . | nindent 4 }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{ with .Values.service.loadBalancerSourceRanges }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.service.sessionAffinity }}
+  sessionAffinity: {{ .Values.service.sessionAffinity }}
+  {{- end }}
+  {{- if .Values.service.sessionAffinityConfig }}
+  sessionAffinityConfig:
+  {{- with .Values.service.sessionAffinityConfig }}
+{{ toYaml . | indent 4 }}
+  {{- end }}
+  {{- end }}
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: 3022
+      protocol: TCP
+  {{- if .Values.nodePort }}
+      nodePort: {{ .Values.nodePort }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "k8s-dev-pod.selectorLabels" . | nindent 6 }}
+  type: {{ .Values.service.type | default "ClusterIP" }}
+{{- end }}
